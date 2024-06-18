@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import React from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import './App.scss';
 import users from './api/users';
@@ -38,6 +38,18 @@ const dataCombine = users
   .flat();
 
 export const App = () => {
+  const [sortBy, setSortBy] = useState([...dataCombine]);
+
+  const nameFilter = firstName =>
+    setSortBy([...dataCombine].filter(user => user.name === firstName));
+
+  const inputFilter = val =>
+    setSortBy(
+      [...dataCombine].filter(user =>
+        user.product.name.toLowerCase().includes(val.toLowerCase()),
+      ),
+    );
+
   return (
     <div className="section">
       <div className="container">
@@ -48,21 +60,24 @@ export const App = () => {
             <p className="panel-heading">Filters</p>
 
             <p className="panel-tabs has-text-weight-bold">
-              <a data-cy="FilterAllUsers" href="#/">
+              <a
+                data-cy="FilterAllUsers"
+                href="#/"
+                onClick={() => setSortBy([...dataCombine])}
+              >
                 All
               </a>
 
-              <a data-cy="FilterUser" href="#/">
-                User 1
-              </a>
-
-              <a data-cy="FilterUser" href="#/" className="is-active">
-                User 2
-              </a>
-
-              <a data-cy="FilterUser" href="#/">
-                User 3
-              </a>
+              {users.map(user => (
+                <a
+                  key={user.id}
+                  data-cy="FilterUser"
+                  href="#/"
+                  onClick={() => nameFilter(user.name)}
+                >
+                  {user.name}
+                </a>
+              ))}
             </p>
 
             <div className="panel-block">
@@ -72,7 +87,7 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  onChange={event => inputFilter(event.target.value)}
                 />
 
                 <span className="icon is-left">
@@ -193,7 +208,7 @@ export const App = () => {
             </thead>
 
             <tbody>
-              {dataCombine
+              {sortBy
                 .sort((a, b) => a.product.id - b.product.id)
                 .map(card => (
                   <tr key={card.product.id} data-cy="Product">

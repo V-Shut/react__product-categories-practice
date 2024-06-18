@@ -39,6 +39,7 @@ const dataCombine = users
 
 export const App = () => {
   const [sortBy, setSortBy] = useState([...dataCombine]);
+  const [search, setSearch] = useState('');
 
   const nameFilter = firstName =>
     setSortBy([...dataCombine].filter(user => user.name === firstName));
@@ -48,7 +49,10 @@ export const App = () => {
       [...dataCombine].filter(user =>
         user.product.name.toLowerCase().includes(val.toLowerCase()),
       ),
+      setSearch(val),
     );
+
+  const clearInput = () => setSearch('');
 
   return (
     <div className="section">
@@ -87,6 +91,7 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
+                  value={search}
                   onChange={event => inputFilter(event.target.value)}
                 />
 
@@ -94,14 +99,17 @@ export const App = () => {
                   <i className="fas fa-search" aria-hidden="true" />
                 </span>
 
-                <span className="icon is-right">
-                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
-                </span>
+                {search && (
+                  <span className="icon is-right">
+                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={clearInput}
+                    />
+                  </span>
+                )}
               </p>
             </div>
 

@@ -52,7 +52,10 @@ export const App = () => {
       setSearch(val),
     );
 
-  const clearInput = () => setSearch('');
+  const clearInput = () => {
+    setSearch('');
+    setSortBy([...dataCombine]);
+  };
 
   return (
     <div className="section">
@@ -78,6 +81,10 @@ export const App = () => {
                   data-cy="FilterUser"
                   href="#/"
                   onClick={() => nameFilter(user.name)}
+                  className={cn({
+                    '': sortBy[0].name === undefined,
+                    'is-active': sortBy[0].name === user.name,
+                  })}
                 >
                   {user.name}
                 </a>
